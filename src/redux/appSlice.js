@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createTodo, getTodos, toggleDone } from "./appThunk";
+import {
+  createTodo,
+  getTodos,
+  toggleDone,
+  updateTodo,
+  deleteTodo,
+} from "./appThunk";
 
 const appSlice = createSlice({
   name: "appSlice",
@@ -7,12 +13,16 @@ const appSlice = createSlice({
     todos: null,
     isLoading: false,
     newTodo: "",
+    updateToggle: false,
   },
   // 초기값 설정~
 
   reducers: {
     setNewTodo: (state, action) => {
       state.newTodo = action.payload;
+    },
+    setUpdateToggle: (state) => {
+      state.updateToggle = !state.updateToggle;
     },
   },
 
@@ -59,6 +69,44 @@ const appSlice = createSlice({
     builder.addCase(toggleDone.rejected, (state) => {
       state.isLoading = false;
     });
+
+    // 구분용 주석///////////////////////////////////
+
+    builder.addCase(updateTodo.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateTodo.fulfilled, (state, action) => {
+      state.todos = state.todos.map((v) => {
+        if (v.id === action.payload.id) {
+          return action.payload;
+        } else {
+          return v;
+        }
+      });
+      state.isLoading = false;
+    });
+    builder.addCase(updateTodo.rejected, (state) => {
+      state.isLoading = false;
+    });
+
+    //
+    builder.addCase(deleteTodo.pending, (state) => {
+      state.isLoading = true;
+    });
+    // state인자를 받아서 isLoading을 true로 바꿔줘라
+    builder.addCase(deleteTodo.fulfilled, (state, action) => {
+      state.todos = state.todos.filter((v) => {
+        if (v.id !== action.payload) {
+          return v;
+        }
+      });
+      state.isLoading = false;
+      // 딜리트는 그냥 데이터가 아니레 메시지가 날라옴
+    });
+    builder.addCase(deleteTodo.rejected, (state) => {
+      state.isLoading = false;
+      //
+    });
   },
   //   위 4가지가 기본 포맷
   // 비동기 요청은 reducer말고 extraReducer
@@ -70,6 +118,6 @@ const appSlice = createSlice({
   // ---------------------- 위 내용이 "추가" 에 대한 슬라이서//
 });
 
-export const { setNewTodo } = appSlice.actions;
+export const { setNewTodo, setUpdateToggle } = appSlice.actions;
 
 export default appSlice;

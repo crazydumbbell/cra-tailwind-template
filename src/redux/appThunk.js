@@ -33,12 +33,40 @@ export const createTodo = createAsyncThunk(
 
 export const toggleDone = createAsyncThunk(
   "appSlice/toggleDone",
-  async ({ todoId }) => {
+  async ({ todoId, title }) => {
     const response = axios.put(`http://localhost:3010/todos/${todoId}/done`);
     return (await response).data.todo;
   }
+);
 
-  // 걍 썽크 기본 포맷임 앞에 주소는 불러들일 백엔드 주소
-  // 거기서 todoId라는 놈으로 요청해서
-  // axios로 호스트로 보내는것임
+// 걍 썽크 기본 포맷임 앞에 주소는 불러들일 백엔드 주소
+// 거기서 todoId라는 놈으로 요청해서
+// axios로 호스트로 보내는것임
+
+export const updateTodo = createAsyncThunk(
+  "appSlice/updateTodo",
+  async ({ todoId, title }) => {
+    const response = await axios.put(
+      `http://localhost:3010/todos/${todoId}`,
+      {
+        title,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data.todo;
+  }
+);
+
+export const deleteTodo = createAsyncThunk(
+  "appSlice/deleteTodo",
+  async ({ todoId }) => {
+    await axios.delete(`http://localhost:3010/todos/${todoId}`);
+
+    return todoId;
+  }
 );

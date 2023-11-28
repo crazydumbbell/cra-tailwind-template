@@ -5,6 +5,7 @@ import { setNewTodo } from "../redux/appSlice";
 const CreateTodo = () => {
   const { newTodo } = useSelector((state) => state.appReducer);
   const dispatch = useDispatch();
+  
   const onSubmitCreateTodo = async (e) => {
     e.preventDefault();
     // 온서브밋이니까 새로고침 막아놔야됨
