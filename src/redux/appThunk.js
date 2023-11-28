@@ -5,6 +5,7 @@ import axios from "axios";
 
 export const getTodos = createAsyncThunk("appSlice/getTodos", async () => {
   const response = await axios.get("http://localhost:3010/todos");
+  //나중에 주소들은 환경변수 처리 해주면됨(은닉 + 개발/베포시 달라지는정보들)
 
   return response.data.todos;
 });
@@ -28,4 +29,16 @@ export const createTodo = createAsyncThunk(
     return response.data.todo;
   }
   //   요거는 백엔드에서 받아오는것.
+);
+
+export const toggleDone = createAsyncThunk(
+  "appSlice/toggleDone",
+  async ({ todoId }) => {
+    const response = axios.put(`http://localhost:3010/todos/${todoId}/done`);
+    return (await response).data.todo;
+  }
+
+  // 걍 썽크 기본 포맷임 앞에 주소는 불러들일 백엔드 주소
+  // 거기서 todoId라는 놈으로 요청해서
+  // axios로 호스트로 보내는것임
 );
